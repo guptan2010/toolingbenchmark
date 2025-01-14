@@ -1,0 +1,26 @@
+-- Insert data into department table
+INSERT INTO department (department_id, department_name, region) VALUES
+(1, 'HR', 'North'),
+(2, 'IT', 'East'),
+(3, 'Sales', 'South'),
+(4, 'Marketing', 'West');
+
+-- Insert data into employee table
+INSERT INTO employee (employee_id, department_id, salary, job_title, hire_date) VALUES
+(1, 1, 130000, 'Manager', '2016-01-15'),
+(2, 1, 90000, 'Assistant', '2017-03-22'),
+(3, 2, 150000, 'Senior Manager', '2015-07-01'),
+(4, 2, 80000, 'Developer', '2018-11-11'),
+(5, 3, 120000, 'Sales Manager', '2019-05-30'),
+(6, 3, 70000, 'Sales Associate', '2020-02-20'),
+(7, 4, 110000, 'Marketing Lead', '2016-09-10'),
+(8, 4, 60000, 'Intern', '2017-12-05');
+
+
+
+
+
+department_id	department_name	total_employees	high_salary_count	avg_manager_salary	highest_salary	lowest_salary	overall_avg_salary	department_size
+1	HR	2	1	130000	130000	90000	110000.00	Small
+2	IT	2	1	150000	150000	80000	115000.00	Small
+3	Sales	2	0	120000	120000	70000	95000.00	Small

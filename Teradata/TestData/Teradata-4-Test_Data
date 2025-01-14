@@ -1,0 +1,30 @@
+-- Insert data into sales table
+INSERT INTO sales (transaction_id, product_id, region, transaction_date, sales_amount, promotion_applied) VALUES
+(1, 101, 'West', '2023-01-15', 1200, TRUE),
+(2, 101, 'West', '2023-02-20', 800, FALSE),
+(3, 102, 'East', '2023-03-10', 1500, TRUE),
+(4, 102, 'East', '2023-04-25', 700, FALSE),
+(5, 103, 'Central', '2023-05-30', 600, TRUE),
+(6, 103, 'Central', '2023-06-15', 400, FALSE),
+(7, 104, 'West', '2023-07-20', 1100, TRUE),
+(8, 104, 'East', '2023-08-25', 900, FALSE),
+(9, 105, 'Central', '2023-09-30', 500, TRUE),
+(10, 105, 'Central', '2023-10-15', 300, FALSE);
+
+-- Insert data into product table
+INSERT INTO product (product_id, product_name) VALUES
+(101, 'Product A'),
+(102, 'Product B'),
+(103, 'Product C'),
+(104, 'Product D'),
+(105, 'Product E');
+
+
+
+region	product_id	product_name	total_sales	transaction_count	adjusted_sales	max_sales	min_sales	sales_variance	sales_stddev	product_info	report_date	transaction_year	transaction_month	transaction_day	sales_category
+West	101	Product A	2000	2	1920.00	1200	800	80000.00	282.84	Product A (101)	2023-12-31	2023	1	15	High
+East	102	Product B	2200	2	2130.00	1500	700	320000.00	565.69	Product B (102)	2023-12-31	2023	3	10	High
+Central	103	Product C	1000	2	960.00	600	400	20000.00	141.42	Product C (103)	2023-12-31	2023	5	30	Medium
+West	104	Product D	1100	1	990.00	1100	1100	0.00	0.00	Product D (104)	2023-12-31	2023	7	20	High
+East	104	Product D	900	1	900.00	900	900	0.00	0.00	Product D (104)	2023-12-31	2023	8	25	Medium
+Central	105	Product E	800	2	750.00	500	300	20000.00	141.42	Product E (105)	2023-12-31	2023	9	30	Medium

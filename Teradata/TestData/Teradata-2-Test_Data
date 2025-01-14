@@ -1,0 +1,23 @@
+-- Insert data into employee table
+INSERT INTO employee (employee_id, department_id, salary, job_title, hire_date) VALUES
+(1, 1, 130000, 'Manager', '2016-01-15'),
+(2, 1, 90000, 'Assistant', '2017-03-22'),
+(3, 1, 110000, 'Developer', '2018-11-11'),
+(4, 2, 150000, 'Senior Manager', '2015-07-01'),
+(5, 2, 80000, 'Developer', '2018-11-11'),
+(6, 2, 120000, 'Developer', '2019-05-30'),
+(7, 3, 70000, 'Sales Associate', '2020-02-20'),
+(8, 3, 60000, 'Sales Associate', '2017-12-05'),
+(9, 3, 120000, 'Sales Manager', '2019-05-30'),
+(10, 4, 110000, 'Marketing Lead', '2016-09-10'),
+(11, 4, 60000, 'Intern', '2017-12-05'),
+(12, 4, 115000, 'Marketing Lead', '2018-01-10');
+
+
+
+employee_id	department_id	salary	job_title	avg_department_salary	rank_within_dept	total_salary_by_job	recent_hires_rank
+1	1	130000	Manager	110000	1	130000	1
+4	2	150000	Senior Manager	116666.67	1	150000	1
+6	2	120000	Developer	116666.67	2	200000	2
+9	3	120000	Sales Manager	83333.33	1	120000	1
+12	4	115000	Marketing Lead	95000	1	225000	1

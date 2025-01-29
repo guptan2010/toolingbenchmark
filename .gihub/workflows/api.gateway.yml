@@ -13,11 +13,23 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set GitHub folder based on Source System
+      id: set-folder
+      run: |
+        if [ "${{ github.event.inputs.source_system }}" == "teradata" ]; then
+          echo "::set-output name=github_folder::Teradata/Queries"
+        elif [ "${{ github.event.inputs.source_system }}" == "snowflake" ]; then
+          echo "::set-output name=github_folder::Snowflake/Queries"
+        else
+          echo "Unknown source system"
+          exit 1
+        fi
+
     - name: Hit API Gateway
       run: |
         curl -X POST https://api-gateway-endpoint.com/endpoint \
         -H "Content-Type: application/json" \
-        -d '{"repo": "${{ github.repository }}", "source_system": "your-source-system", "github_folder": "your-github-folder"}' \
+        -d '{"repo": "${{ github.repository }}", "source_system": "${{ github.event.inputs.source_system }}", "github_folder": "${{ steps.set-folder.outputs.github_folder }}"}' \
         -o response.json
 
     - name: Install Databricks CLI

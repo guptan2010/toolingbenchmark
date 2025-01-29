@@ -1,1 +1,38 @@
+name: CI/CD Pipeline
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hit-api-gateway:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Hit API Gateway
+      run: |
+        curl -X POST https://api-gateway-endpoint.com/endpoint \
+        -H "Content-Type: application/json" \
+        -d '{"repo": "${{ github.repository }}", "source_system": "your-source-system", "github_folder": "your-github-folder"}' \
+        -o response.json
+
+    - name: Install Databricks CLI
+      run: pip install databricks-cli
+
+    - name: Configure Databricks CLI
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+      run: |
+        databricks configure --token <<EOF
+        $DATABRICKS_HOST
+        $DATABRICKS_TOKEN
+        EOF
+
+    - name: Upload response to Databricks
+      run: |
+        databricks fs cp response.json dbfs:/path/to/store/response.json

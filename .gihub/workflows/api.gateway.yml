@@ -13,24 +13,32 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Set GitHub folder based on Source System
-      id: set-folder
-      run: |
-        if [ "${{ github.event.inputs.source_system }}" == "teradata" ]; then
-          echo "::set-output name=github_folder::Teradata/Queries"
-        elif [ "${{ github.event.inputs.source_system }}" == "snowflake" ]; then
-          echo "::set-output name=github_folder::Snowflake/Queries"
-        else
-          echo "Unknown source system"
-          exit 1
-        fi
+    - name: Install jq
+      run: sudo apt-get install -y jq
 
     - name: Hit API Gateway
       run: |
         curl -X POST https://api-gateway-endpoint.com/endpoint \
         -H "Content-Type: application/json" \
-        -d '{"repo": "${{ github.repository }}", "source_system": "${{ github.event.inputs.source_system }}", "github_folder": "${{ steps.set-folder.outputs.github_folder }}"}' \
+        -d '{"repo": "${{ github.repository }}", "source_system": "your-source-system", "github_folder": "your-github-folder"}' \
         -o response.json
+
+    - name: Parse API response
+      id: parse_response
+      run: |
+        company_name=$(jq -r '.company_name' response.json)
+        source_system=$(jq -r '.source_system' response.json)
+        converted_queries=$(jq -r '.converted_queries' response.json)
+        echo "::set-output name=company_name::$company_name"
+        echo "::set-output name=source_system::$source_system"
+        echo "::set-output name=converted_queries::$converted_queries"
+
+    - name: Create folder structure and store results
+      run: |
+        company_name="${{ steps.parse_response.outputs.company_name }}"
+        source_system="${{ steps.parse_response.outputs.source_system }}"
+        mkdir -p "$company_name/$source_system/Results"
+        echo "${{ steps.parse_response.outputs.converted_queries }}" > "$company_name/$source_system/Results/queries.txt"
 
     - name: Install Databricks CLI
       run: pip install databricks-cli
@@ -45,6 +53,17 @@ jobs:
         $DATABRICKS_TOKEN
         EOF
 
-    - name: Upload response to Databricks
+    - name: Update Databricks Repo
+      env:
+        DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+        DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       run: |
-        databricks fs cp response.json dbfs:/path/to/store/response.json
+        repo_id=$(databricks repos list --path /Repos/your-repo-path | jq -r '.repos[] | select(.path == "/Repos/your-repo-path") | .id')
+        if [ -z "$repo_id" ]; then
+          echo "Repo not found"
+          exit 1
+        fi
+        curl -X PATCH "$DATABRICKS_HOST/api/2.0/repos/$repo_id" \
+        -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"branch": "main"}'
